@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Guiado: Despeje de Variables Paso a Paso</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- MathJax -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fb;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+        
+        .ejercicio-card {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .ejercicio-card:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .ejercicio-header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .ecuacion-original {
+            background-color: #f1f7fa;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .concepto {
+            color: #1a7db5;
+            font-weight: 600;
+            margin-top: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pasos-container {
+            padding: 1.5rem;
+        }
+        
+        .paso {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed #eaeaea;
+        }
+        
+        .paso:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        .resultado {
+            background-color: #ebf6e6;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .controles-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .boton-nav {
+            background-color: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 500;
+            border: none;
+        }
+        
+        .boton-nav:hover {
+            background-color: #2980b9;
+        }
+        
+        .variable {
+            font-style: italic;
+            font-weight: 600;
+            color: #e67e22;
+        }
+        
+        #indice-ejercicios {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        
+        #indice-ejercicios.mostrar {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .indice-item {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .indice-item:hover {
+            background-color: #e2e8f0;
+        }
+        
+        .toggle-indice {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .toggle-indice svg {
+            transition: transform 0.3s;
+            margin-left: 0.5rem;
+        }
+        
+        .toggle-indice.activo svg {
+            transform: rotate(180deg);
+        }
+        
+        .ejercicio-container {
+            scroll-margin-top: 2rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+    <div class="max-w-5xl mx-auto">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Despeje de Variables: Solución Paso a Paso</h1>
+            <p class="text-lg text-gray-600">Este taller presenta el proceso paso a paso para despejar la variable indicada en cada ecuación, detallando el concepto matemático aplicado en cada etapa.</p>
+        </header>
+        
+        <div class="mb-8">
+            <div class="toggle-indice flex items-center justify-center mb-4" onclick="toggleIndice()">
+                <span>Mostrar índice de ejercicios</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            
+            <div id="indice-ejercicios" class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Índice de Ejercicios</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <div class="indice-item" onclick="navegarA('ejercicio1')">1. Despeje de R en V=\(\frac{1}{3}\pi h(r^{2}+R^{2}+rR)\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio2')">2. Despeje de r en C=2πr</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio3')">3. Despeje de l en P=2w+2l</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio4')">4. Despeje de t en l=Prt</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio5')">5. Despeje de h en S=2πrh</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio6')">6. Despeje de h en A=\(\frac{1}{2}\)bh</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio7')">7. Despeje de h en V=\(\frac{1}{3}\)πr²h</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio8')">8. Despeje de m en F=g\(\frac{mM}{d^2}\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio9')">9. Despeje de b₁ en A=\(\frac{1}{2}\)(b₁+b₂)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio10')">10. Despeje de r en A=P+Prt</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio11')">11. Despeje de v en L²=b(1-\(\frac{v^2}{c^2}\))</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio12')">12. Despeje de t en s=\(\frac{1}{2}\)gt²+v₀t</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio13')">13. Despeje de q en S=\(\frac{p}{q+p(1-q)}\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio14')">14. Despeje de r en A=2πr(r+h)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio15')">15. Despeje de C en P+N=\(\frac{C+2}{C}\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio16')">16. Despeje de D en A=B\(\sqrt[3]{\frac{C}{D}}\)-E</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio17')">17. Despeje de R en F=\(\frac{\pi PR^4}{8VL}\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio18')">18. Despeje de r en V=V\(_{\text{max}}\)(1-\((\frac{r}{r_0})^2\))</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio19')">19. Despeje de x en W=b\((\frac{a}{a+x})^2\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio20')">20. Despeje de a en W=b\((\frac{a}{a+x})^2\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio21')">21. Despeje de v en d=2π\((\frac{vR}{0.52\cos(\theta)})^{1/3}\)</div>
+                    <div class="indice-item" onclick="navegarA('ejercicio22')">22. Despeje de θ en d=2π\((\frac{vR}{0.52\cos(\theta)})^{1/3}\)</div>
+                </div>
+            </div>
+        </div>
+        
+        <main class="space-y-8">
+            <!-- Ejercicio 1 -->
+            <div id="ejercicio1" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 1</span>
+                        <span class="text-sm">Despeje de variable R</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(V=\frac{1}{3}\pi h(r^{2}+R^{2}+rR)\)</p>
+                        <p>Variable a despejar: \(R\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por 3 para eliminar la fracción.</div>
+
+                            \[ 3V = \pi h(r^{2}+R^{2}+rR) \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(\pi h\).</div>
+
+                            \[ \dfrac{3V}{\pi h} = r^{2}+R^{2}+rR \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Reorganizar la ecuación para tener todos los términos con \(R\) en un lado y formar una ecuación cuadrática en términos de \(R\).</div>
+
+                            \[ R^2 + rR + r^2 - \dfrac{3V}{\pi h} = 0 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Utilizar la fórmula general para resolver una ecuación cuadrática de la forma \(aR^2 + bR + c = 0\), donde \(a=1\), \(b=r\), y \(c = r^2 - \dfrac{3V}{\pi h}\).</div>
+
+                            \[ R = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]
+
+                            \[ R = \dfrac{-r \pm \sqrt{r^2 - 4(1)\left(r^2 - \dfrac{3V}{\pi h}\right)}}{2(1)} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar el discriminante.</div>
+
+                            \[ R = \dfrac{-r \pm \sqrt{r^2 - 4r^2 + \dfrac{12V}{\pi h}}}{2} \]
+
+                            \[ R = \dfrac{-r \pm \sqrt{\dfrac{12V}{\pi h} - 3r^2}}{2} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ R = \dfrac{-r \pm \sqrt{\dfrac{12V - 3\pi h r^2}{\pi h}}}{2} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio22', true)">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio1')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio2')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 2 -->
+            <div id="ejercicio2" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 2</span>
+                        <span class="text-sm">Despeje de variable r</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(C=2\pi r\)</p>
+                        <p>Variable a despejar: \(r\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(2\pi\).</div>
+
+                            \[ \dfrac{C}{2\pi} = \dfrac{2\pi r}{2\pi} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar.</div>
+
+                            \[ \dfrac{C}{2\pi} = r \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ r = \dfrac{C}{2\pi} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio1')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio2')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio3')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 3 -->
+            <div id="ejercicio3" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 3</span>
+                        <span class="text-sm">Despeje de variable l</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(P=2w+2l\)</p>
+                        <p>Variable a despejar: \(l\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar \(2w\) de ambos lados.</div>
+
+                            \[ P - 2w = 2w + 2l - 2w \]
+
+                            \[ P - 2w = 2l \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por 2.</div>
+
+                            \[ \dfrac{P - 2w}{2} = \dfrac{2l}{2} \]
+
+                            \[ \dfrac{P - 2w}{2} = l \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ l = \dfrac{P - 2w}{2} \quad \text{o} \quad l = \dfrac{P}{2} - w \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio2')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio3')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio4')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 4 -->
+            <div id="ejercicio4" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 4</span>
+                        <span class="text-sm">Despeje de variable t</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(I=Prt\)</p>
+                        <p>Variable a despejar: \(t\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(Pr\).</div>
+
+                            \[ \dfrac{I}{Pr} = \dfrac{Prt}{Pr} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar.</div>
+
+                            \[ \dfrac{I}{Pr} = t \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ t = \dfrac{I}{Pr} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio3')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio4')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio5')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 5 -->
+            <div id="ejercicio5" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 5</span>
+                        <span class="text-sm">Despeje de variable h</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(S=2\pi rh\)</p>
+                        <p>Variable a despejar: \(h\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(2\pi r\).</div>
+
+                            \[ \dfrac{S}{2\pi r} = \dfrac{2\pi rh}{2\pi r} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar.</div>
+
+                            \[ \dfrac{S}{2\pi r} = h \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ h = \dfrac{S}{2\pi r} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio4')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio5')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio6')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 6 -->
+            <div id="ejercicio6" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 6</span>
+                        <span class="text-sm">Despeje de variable h</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(A=\frac{1}{2}bh\)</p>
+                        <p>Variable a despejar: \(h\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por 2.</div>
+
+                            \[ 2A = 2 \times \frac{1}{2}bh \]
+
+                            \[ 2A = bh \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(b\).</div>
+
+                            \[ \dfrac{2A}{b} = \dfrac{bh}{b} \]
+
+                            \[ \dfrac{2A}{b} = h \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ h = \dfrac{2A}{b} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio5')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio6')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio7')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 7 -->
+            <div id="ejercicio7" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 7</span>
+                        <span class="text-sm">Despeje de variable h</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(V=\frac{1}{3}\pi r^{2}h\)</p>
+                        <p>Variable a despejar: \(h\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por 3.</div>
+
+                            \[ 3V = 3 \times \frac{1}{3}\pi r^{2}h \]
+
+                            \[ 3V = \pi r^{2}h \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(\pi r^{2}\).</div>
+
+                            \[ \dfrac{3V}{\pi r^{2}} = \dfrac{\pi r^{2}h}{\pi r^{2}} \]
+
+                            \[ \dfrac{3V}{\pi r^{2}} = h \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ h = \dfrac{3V}{\pi r^{2}} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio6')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio7')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio8')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 8 -->
+            <div id="ejercicio8" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 8</span>
+                        <span class="text-sm">Despeje de variable m</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(F=g\dfrac{mM}{d^{2}}\)</p>
+                        <p>Variable a despejar: \(m\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(d^2\).</div>
+
+                            \[ Fd^{2} = g\dfrac{mM}{d^{2}} d^{2} \]
+
+                            \[ Fd^{2} = gmM \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(gM\).</div>
+
+                            \[ \dfrac{Fd^{2}}{gM} = \dfrac{gmM}{gM} \]
+
+                            \[ \dfrac{Fd^{2}}{gM} = m \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ m = \dfrac{Fd^{2}}{gM} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio7')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio8')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio9')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 9 -->
+            <div id="ejercicio9" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 9</span>
+                        <span class="text-sm">Despeje de variable b₁</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(A=\frac{1}{2}(b_{1}+b_{2})\)</p>
+                        <p>Variable a despejar: \(b_{1}\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por 2.</div>
+
+                            \[ 2A = 2 \times \frac{1}{2}(b_{1}+b_{2}) \]
+
+                            \[ 2A = b_{1}+b_{2} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar \(b_2\) de ambos lados.</div>
+
+                            \[ 2A - b_{2} = b_{1}+b_{2} - b_{2} \]
+
+                            \[ 2A - b_{2} = b_{1} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ b_{1} = 2A - b_{2} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio8')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio9')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio10')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 10 -->
+            <div id="ejercicio10" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 10</span>
+                        <span class="text-sm">Despeje de variable r</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(A=P+Prt\)</p>
+                        <p>Variable a despejar: \(r\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar \(P\) de ambos lados.</div>
+
+                            \[ A - P = P + Prt - P \]
+
+                            \[ A - P = Prt \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(Pt\).</div>
+
+                            \[ \dfrac{A - P}{Pt} = \dfrac{Prt}{Pt} \]
+
+                            \[ \dfrac{A - P}{Pt} = r \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ r = \dfrac{A - P}{Pt} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio9')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio10')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio11')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 11 -->
+            <div id="ejercicio11" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 11</span>
+                        <span class="text-sm">Despeje de variable v</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(L^{2}=b\left({1 - \frac{v^{2}}{c^{2}}}\right)\)</p>
+                        <p>Variable a despejar: \(v\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(b\).</div>
+
+                            \[ \dfrac{L^{2}}{b} = 1 - \dfrac{v^{2}}{c^{2}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar 1 de ambos lados.</div>
+
+                            \[ \dfrac{L^{2}}{b} - 1 = - \dfrac{v^{2}}{c^{2}} \]
+
+                            \[ \dfrac{L^{2} - b}{b} = - \dfrac{v^{2}}{c^{2}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(-1\).</div>
+
+                            \[ -\dfrac{L^{2} - b}{b} = \dfrac{v^{2}}{c^{2}} \]
+
+                            \[ \dfrac{b - L^{2}}{b} = \dfrac{v^{2}}{c^{2}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(c^2\).</div>
+
+                            \[ c^{2}\left(\dfrac{b - L^{2}}{b}\right) = v^{2} \]
+
+                            \[ \dfrac{c^{2}(b - L^{2})}{b} = v^{2} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar la raíz cuadrada de ambos lados.</div>
+
+                            \[ \pm\sqrt{\dfrac{c^{2}(b - L^{2})}{b}} = v \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar la raíz cuadrada asumiendo \(c > 0\).</div>
+
+                            \[ \pm c\sqrt{\dfrac{b - L^{2}}{b}} = v \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ v = \pm c\sqrt{\dfrac{b - L^{2}}{b}} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio10')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio11')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio12')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 12 -->
+            <div id="ejercicio12" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 12</span>
+                        <span class="text-sm">Despeje de variable t</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(s=\frac{1}{2}gt^{2}+v_{0}t\)</p>
+                        <p>Variable a despejar: \(t\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Reorganizar la ecuación para formar una ecuación cuadrática en términos de \(t\).</div>
+
+                            \[ \frac{1}{2}gt^{2}+v_{0}t - s = 0 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Utilizar la fórmula general para resolver una ecuación cuadrática de la forma \(at^2 + bt + c = 0\), donde \(a=\frac{1}{2}g\), \(b=v_0\), y \(c=-s\).</div>
+
+                            \[ t = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]
+
+                            \[ t = \dfrac{-v_{0} \pm \sqrt{(v_{0})^2 - 4(\frac{1}{2}g)(-s)}}{2(\frac{1}{2}g)} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar el discriminante y el denominador.</div>
+
+                            \[ t = \dfrac{-v_{0} \pm \sqrt{v_{0}^2 + 2gs}}{g} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ t = \dfrac{-v_{0} \pm \sqrt{v_{0}^2 + 2gs}}{g} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio11')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio12')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio13')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 13 -->
+            <div id="ejercicio13" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 13</span>
+                        <span class="text-sm">Despeje de variable q</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(S=\dfrac{p}{q+p(1-q)}\)</p>
+                        <p>Variable a despejar: \(q\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por el denominador.</div>
+
+                            \[ S(q+p(1-q)) = p \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Distribuir \(p\) en el paréntesis.</div>
+
+                            \[ S(q+p-pq) = p \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Distribuir \(S\) en el paréntesis.</div>
+
+                            \[ Sq + Sp - Spq = p \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Mover los términos que no contienen \(q\) al otro lado.</div>
+
+                            \[ Sq - Spq = p - Sp \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Factorizar \(q\) del lado izquierdo.</div>
+
+                            \[ q(S - Sp) = p - Sp \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por el factor de \(q\).</div>
+
+                            \[ q = \dfrac{p - Sp}{S - Sp} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Opcional: Factorizar \(p\) en el numerador y \(S\) en el denominador.</div>
+
+                            \[ q = \dfrac{p(1 - S)}{S(1 - p)} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ q = \dfrac{p(1 - S)}{S(1 - p)} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio12')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio13')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio14')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 14 -->
+            <div id="ejercicio14" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 14</span>
+                        <span class="text-sm">Despeje de variable r</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(A=2\pi r(r+h)\)</p>
+                        <p>Variable a despejar: \(r\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Distribuir \(2\pi r\).</div>
+
+                            \[ A = 2\pi r^2 + 2\pi rh \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Reorganizar la ecuación para formar una ecuación cuadrática en términos de \(r\).</div>
+
+                            \[ 2\pi r^2 + 2\pi hr - A = 0 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Utilizar la fórmula general para resolver una ecuación cuadrática de la forma \(ar^2 + br + c = 0\), donde \(a=2\pi\), \(b=2\pi h\), y \(c=-A\).</div>
+
+                            \[ r = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]
+
+                            \[ r = \dfrac{-(2\pi h) \pm \sqrt{(2\pi h)^2 - 4(2\pi)(-A)}}{2(2\pi)} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar el discriminante y el denominador.</div>
+
+                            \[ r = \dfrac{-2\pi h \pm \sqrt{4\pi^2 h^2 + 8\pi A}}{4\pi} \]
+
+                            \[ r = \dfrac{-2\pi h \pm \sqrt{4\pi(\pi h^2 + 2A)}}{4\pi} \]
+
+                            \[ r = \dfrac{-2\pi h \pm 2\sqrt{\pi(\pi h^2 + 2A)}}{4\pi} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar la fracción dividiendo por 2.</div>
+
+                            \[ r = \dfrac{-\pi h \pm \sqrt{\pi(\pi h^2 + 2A)}}{2\pi} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ r = \dfrac{-\pi h \pm \sqrt{\pi^2 h^2 + 2\pi A}}{2\pi} \]
+                            <p class="text-sm text-gray-600 mt-2">(Nota: Como \(r\) es típicamente un radio, debe ser no negativo. Elija la raíz positiva si es aplicable en el contexto.)</p>
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio13')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio14')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio15')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 15 -->
+            <div id="ejercicio15" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 15</span>
+                        <span class="text-sm">Despeje de variable C</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(P+N=\dfrac{C+2}{C}\)</p>
+                        <p>Variable a despejar: \(C\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(C\).</div>
+
+                            \[ C(P+N) = C+2 \]
+
+                            \[ CP + CN = C+2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Mover los términos con \(C\) a un lado y los términos sin \(C\) al otro.</div>
+
+                            \[ CP + CN - C = 2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Factorizar \(C\) del lado izquierdo.</div>
+
+                            \[ C(P + N - 1) = 2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por el factor de \(C\).</div>
+
+                            \[ C = \dfrac{2}{P + N - 1} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ C = \dfrac{2}{P + N - 1} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio14')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio15')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio16')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 16 -->
+            <div id="ejercicio16" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 16</span>
+                        <span class="text-sm">Despeje de variable D</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(A=B\sqrt[3]{\dfrac{C}{D}}-E\)</p>
+                        <p>Variable a despejar: \(D\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Sumar \(E\) a ambos lados.</div>
+
+                            \[ A+E = B\sqrt[3]{\dfrac{C}{D}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(B\).</div>
+
+                            \[ \dfrac{A+E}{B} = \sqrt[3]{\dfrac{C}{D}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Elevar ambos lados al cubo para eliminar la raíz cúbica.</div>
+
+                            \[ \left(\dfrac{A+E}{B}\right)^3 = \dfrac{C}{D} \]
+
+                            \[ \dfrac{(A+E)^3}{B^3} = \dfrac{C}{D} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(D\).</div>
+
+                            \[ D \dfrac{(A+E)^3}{B^3} = C \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(\dfrac{B^3}{(A+E)^3}\) para despejar \(D\).</div>
+
+                            \[ D = C \dfrac{B^3}{(A+E)^3} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ D = \dfrac{CB^3}{(A+E)^3} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio15')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio16')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio17')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 17 -->
+            <div id="ejercicio17" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 17</span>
+                        <span class="text-sm">Despeje de variable R</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(F=\dfrac{\pi PR^{4}}{8VL}\)</p>
+                        <p>Variable a despejar: \(R\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(8VL\).</div>
+
+                            \[ F(8VL) = \pi PR^{4} \]
+
+                            \[ 8FVL = \pi PR^{4} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(\pi P\).</div>
+
+                            \[ \dfrac{8FVL}{\pi P} = R^{4} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar la cuarta raíz de ambos lados.</div>
+
+                            \[ \sqrt[4]{\dfrac{8FVL}{\pi P}} = R \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ R = \sqrt[4]{\dfrac{8FVL}{\pi P}} \]
+                            <p class="text-sm text-gray-600 mt-2">(Nota: Como \(R\) es típicamente un radio, debe ser no negativo. Se ha elegido la raíz positiva.)</p>
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio16')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio17')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio18')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 18 -->
+            <div id="ejercicio18" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 18</span>
+                        <span class="text-sm">Despeje de variable r</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(V=V_{max}\left(1-\left(\dfrac{r}{r_0}\right)^2 \right)\)</p>
+                        <p>Variable a despejar: \(r\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(V_{max}\).</div>
+
+                            \[ \dfrac{V}{V_{max}} = 1-\left(\dfrac{r}{r_0}\right)^2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar 1 de ambos lados.</div>
+
+                            \[ \dfrac{V}{V_{max}} - 1 = -\left(\dfrac{r}{r_0}\right)^2 \]
+
+                            \[ \dfrac{V - V_{max}}{V_{max}} = -\left(\dfrac{r}{r_0}\right)^2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(-1\).</div>
+
+                            \[ -\dfrac{V - V_{max}}{V_{max}} = \left(\dfrac{r}{r_0}\right)^2 \]
+
+                            \[ \dfrac{V_{max} - V}{V_{max}} = \left(\dfrac{r}{r_0}\right)^2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar la raíz cuadrada de ambos lados.</div>
+
+                            \[ \sqrt{\dfrac{V_{max} - V}{V_{max}}} = \dfrac{r}{r_0} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(r_0\).</div>
+
+                            \[ r_0 \sqrt{\dfrac{V_{max} - V}{V_{max}}} = r \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ r = r_0 \sqrt{1 - \dfrac{V}{V_{max}}} \]
+                            <p class="text-sm text-gray-600 mt-2">(Nota: Como \(r\) es típicamente un radio, debe ser no negativo. Se ha elegido la raíz positiva.)</p>
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio17')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio18')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio19')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 19 -->
+            <div id="ejercicio19" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 19</span>
+                        <span class="text-sm">Despeje de variable x</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(W=b\left(\dfrac{a}{a+x}\right)^2\)</p>
+                        <p>Variable a despejar: \(x\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(b\).</div>
+
+                            \[ \dfrac{W}{b} = \left(\dfrac{a}{a+x}\right)^2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar la raíz cuadrada de ambos lados.</div>
+
+                            \[ \sqrt{\dfrac{W}{b}} = \dfrac{a}{a+x} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar el recíproco de ambos lados.</div>
+
+                            \[ \dfrac{1}{\sqrt{\dfrac{W}{b}}} = \dfrac{a+x}{a} \]
+
+                            \[ \sqrt{\dfrac{b}{W}} = \dfrac{a+x}{a} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(a\).</div>
+
+                            \[ a\sqrt{\dfrac{b}{W}} = a+x \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Restar \(a\) de ambos lados.</div>
+
+                            \[ a\sqrt{\dfrac{b}{W}} - a = x \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Factorizar \(a\).</div>
+
+                            \[ x = a\left(\sqrt{\dfrac{b}{W}} - 1\right) \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ x = a\left(\sqrt{\dfrac{b}{W}} - 1\right) \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio18')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio19')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio20')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 20 -->
+            <div id="ejercicio20" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 20</span>
+                        <span class="text-sm">Despeje de variable a</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(W=b\left(\dfrac{a}{a+x}\right)^2\)</p>
+                        <p>Variable a despejar: \(a\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(b\).</div>
+
+                            \[ \dfrac{W}{b} = \left(\dfrac{a}{a+x}\right)^2 \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Tomar la raíz cuadrada de ambos lados.</div>
+
+                            \[ \sqrt{\dfrac{W}{b}} = \dfrac{a}{a+x} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(a+x\).</div>
+
+                            \[ (a+x)\sqrt{\dfrac{W}{b}} = a \]
+
+                            \[ a\sqrt{\dfrac{W}{b}} + x\sqrt{\dfrac{W}{b}} = a \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Mover los términos con \(a\) a un lado.</div>
+
+                            \[ a\sqrt{\dfrac{W}{b}} - a = -x\sqrt{\dfrac{W}{b}} \]
+
+                            \[ a\left(\sqrt{\dfrac{W}{b}} - 1\right) = -x\sqrt{\dfrac{W}{b}} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por el factor de \(a\).</div>
+
+                            \[ a = \dfrac{-x\sqrt{\dfrac{W}{b}}}{\sqrt{\dfrac{W}{b}} - 1} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Simplificar la expresión.</div>
+
+                            \[ a = \dfrac{x\sqrt{\dfrac{W}{b}}}{1 - \sqrt{\dfrac{W}{b}}} \]
+
+                            \[ a = \dfrac{x\sqrt{W}}{\sqrt{b} - \sqrt{W}} \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ a = \dfrac{x\sqrt{W}}{\sqrt{b} - \sqrt{W}} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio19')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio20')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio21')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 21 -->
+            <div id="ejercicio21" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 21</span>
+                        <span class="text-sm">Despeje de variable v</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(d=2\pi\left(\dfrac{vR}{0.52\cos(\theta)}\right)^{1/3}\)</p>
+                        <p>Variable a despejar: \(v\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(2\pi\).</div>
+
+                            \[ \dfrac{d}{2\pi} = \left(\dfrac{vR}{0.52\cos(\theta)}\right)^{1/3} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Elevar ambos lados al cubo.</div>
+
+                            \[ \left(\dfrac{d}{2\pi}\right)^3 = \dfrac{vR}{0.52\cos(\theta)} \]
+
+                            \[ \dfrac{d^3}{8\pi^3} = \dfrac{vR}{0.52\cos(\theta)} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(0.52\cos(\theta)\).</div>
+
+                            \[ \dfrac{d^3 \times 0.52\cos(\theta)}{8\pi^3} = vR \]
+
+                            \[ \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3} = vR \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(R\).</div>
+
+                            \[ \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3 R} = v \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ v = \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3 R} \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio20')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio21')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio22')">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ejercicio 22 -->
+            <div id="ejercicio22" class="ejercicio-container">
+                <div class="ejercicio-card">
+                    <div class="ejercicio-header">
+                        <span>Ejercicio 22</span>
+                        <span class="text-sm">Despeje de variable θ</span>
+                    </div>
+                    <div class="ecuacion-original">
+                        <p>Ecuación original: \(d=2\pi\left(\dfrac{vR}{0.52\cos(\theta)}\right)^{1/3}\)</p>
+                        <p>Variable a despejar: \(\theta\)</p>
+                    </div>
+                    <div class="pasos-container">
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(2\pi\).</div>
+
+                            \[ \dfrac{d}{2\pi} = \left(\dfrac{vR}{0.52\cos(\theta)}\right)^{1/3} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Elevar ambos lados al cubo.</div>
+
+                            \[ \left(\dfrac{d}{2\pi}\right)^3 = \dfrac{vR}{0.52\cos(\theta)} \]
+
+                            \[ \dfrac{d^3}{8\pi^3} = \dfrac{vR}{0.52\cos(\theta)} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Multiplicar ambos lados por \(0.52\cos(\theta)\).</div>
+
+                            \[ \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3} = vR \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Dividir ambos lados por \(\dfrac{0.52 d^3}{8\pi^3}\).</div>
+
+                            \[ \cos(\theta) = \dfrac{vR}{\dfrac{0.52 d^3}{8\pi^3}} \]
+
+                            \[ \cos(\theta) = \dfrac{8\pi^3 vR}{0.52 d^3} \]
+                        </div>
+                        <div class="paso">
+                            <div class="concepto">Concepto: Aplicar la función arcocoseno (\(\cos^{-1}\)) a ambos lados.</div>
+
+                            \[ \theta = \cos^{-1}\left(\dfrac{8\pi^3 vR}{0.52 d^3}\right) \]
+                        </div>
+                        <div class="resultado">
+                            <div class="concepto">Resultado:</div>
+
+                            \[ \theta = \cos^{-1}\left(\dfrac{8\pi^3 vR}{0.52 d^3}\right) \]
+                        </div>
+                    </div>
+                    <div class="controles-nav">
+                        <button class="boton-nav" onclick="navegarA('ejercicio21')">Anterior</button>
+                        <button class="boton-nav" onclick="reiniciarEjercicio('ejercicio22')">Reiniciar</button>
+                        <button class="boton-nav" onclick="navegarA('ejercicio1')">Volver al inicio</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="text-center text-gray-600 mt-12 mb-6">
+            <p>Taller Guiado: Despeje de Variables Paso a Paso</p>
+        </footer>
+    </div>
+    
+    <script>
+        // Configuración de MathJax
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+        
+        // Función para navegar entre ejercicios
+        function navegarA(id, circular = false) {
+            const elem = document.getElementById(id);
+            if (elem) {
+                elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (circular) {
+                // Si estamos en modo circular y el ID no existe, ir al primero
+                document.getElementById('ejercicio1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        // Función para reiniciar un ejercicio (solo efectos visuales por ahora)
+        function reiniciarEjercicio(id) {
+            const elem = document.getElementById(id);
+            if (elem) {
+                // Efecto visual de reinicio
+                elem.classList.add('opacity-50');
+                setTimeout(() => {
+                    elem.classList.remove('opacity-50');
+                }, 300);
+            }
+        }
+        
+        // Función para mostrar/ocultar el índice
+        function toggleIndice() {
+            const indice = document.getElementById('indice-ejercicios');
+            const toggle = document.querySelector('.toggle-indice');
+            
+            if (indice.classList.contains('mostrar')) {
+                indice.classList.remove('mostrar');
+                toggle.classList.remove('activo');
+                toggle.querySelector('span').textContent = 'Mostrar índice de ejercicios';
+            } else {
+                indice.classList.add('mostrar');
+                toggle.classList.add('activo');
+                toggle.querySelector('span').textContent = 'Ocultar índice de ejercicios';
+            }
+        }
+    </script>
+</body>
+</html>
