@@ -8,8 +8,29 @@
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
-    <!-- MathJax -->
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <!-- MathJax con configuración mejorada -->
+    <script>
+        window.MathJax = {
+            loader: {
+                load: ['[tex]/cancel']
+            },
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['cancel', 'base', 'ams', 'noerrors', 'noundefined']}
+            },
+            options: {
+                enableMenu: false
+            },
+            startup: {
+                ready: function() {
+                    MathJax.startup.defaultReady();
+                    console.log('MathJax inicializado correctamente');
+                }
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
         body {
@@ -161,17 +182,17 @@
             <p class="text-lg text-gray-600">Este taller presenta el proceso paso a paso para despejar la variable indicada en cada ecuación, detallando el concepto matemático aplicado en cada etapa.</p>
         </header>
         
-        <div class="mb-8">
-            <div class="toggle-indice flex items-center justify-center mb-4" onclick="toggleIndice()">
-                <span>Mostrar índice de ejercicios</span>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            
-            <div id="indice-ejercicios" class="bg-white rounded-lg shadow-sm p-4 mb-6">
-                <h2 class="text-xl font-semibold mb-4">Índice de Ejercicios</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div class="mb-8">
+        <div class="toggle-indice flex items-center justify-center mb-4 activo" onclick="toggleIndice()">
+            <span>Ocultar índice de ejercicios</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        
+        <div id="indice-ejercicios" class="bg-white rounded-lg shadow-sm p-4 mb-6 mostrar">
+            <h2 class="text-xl font-semibold mb-4">Índice de Ejercicios</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     <div class="indice-item" onclick="navegarA('ejercicio1')">1. Despeje de R en V=\(\frac{1}{3}\pi h(r^{2}+R^{2}+rR)\)</div>
                     <div class="indice-item" onclick="navegarA('ejercicio2')">2. Despeje de r en C=2πr</div>
                     <div class="indice-item" onclick="navegarA('ejercicio3')">3. Despeje de l en P=2w+2l</div>
@@ -200,7 +221,7 @@
         
         <main class="space-y-8">
             <!-- Ejercicio 1 -->
-            <div id="ejercicio1" class="ejercicio-container">
+            <div id="ejercicio1" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 1</span>
@@ -255,7 +276,7 @@
             </div>
             
             <!-- Ejercicio 2 -->
-            <div id="ejercicio2" class="ejercicio-container">
+            <div id="ejercicio2" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 2</span>
@@ -291,7 +312,7 @@
             </div>
             
             <!-- Ejercicio 3 -->
-            <div id="ejercicio3" class="ejercicio-container">
+            <div id="ejercicio3" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 3</span>
@@ -331,7 +352,7 @@
             </div>
             
             <!-- Ejercicio 4 -->
-            <div id="ejercicio4" class="ejercicio-container">
+            <div id="ejercicio4" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 4</span>
@@ -367,7 +388,7 @@
             </div>
             
             <!-- Ejercicio 5 -->
-            <div id="ejercicio5" class="ejercicio-container">
+            <div id="ejercicio5" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 5</span>
@@ -403,7 +424,7 @@
             </div>
             
             <!-- Ejercicio 6 -->
-            <div id="ejercicio6" class="ejercicio-container">
+            <div id="ejercicio6" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 6</span>
@@ -443,7 +464,7 @@
             </div>
             
             <!-- Ejercicio 7 -->
-            <div id="ejercicio7" class="ejercicio-container">
+            <div id="ejercicio7" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 7</span>
@@ -483,7 +504,7 @@
             </div>
             
             <!-- Ejercicio 8 -->
-            <div id="ejercicio8" class="ejercicio-container">
+            <div id="ejercicio8" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 8</span>
@@ -523,7 +544,7 @@
             </div>
             
             <!-- Ejercicio 9 -->
-            <div id="ejercicio9" class="ejercicio-container">
+            <div id="ejercicio9" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 9</span>
@@ -563,7 +584,7 @@
             </div>
             
             <!-- Ejercicio 10 -->
-            <div id="ejercicio10" class="ejercicio-container">
+            <div id="ejercicio10" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 10</span>
@@ -603,7 +624,7 @@
             </div>
             
             <!-- Ejercicio 11 -->
-            <div id="ejercicio11" class="ejercicio-container">
+            <div id="ejercicio11" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 11</span>
@@ -665,7 +686,7 @@
             </div>
             
             <!-- Ejercicio 12 -->
-            <div id="ejercicio12" class="ejercicio-container">
+            <div id="ejercicio12" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 12</span>
@@ -708,7 +729,7 @@
             </div>
             
             <!-- Ejercicio 13 -->
-            <div id="ejercicio13" class="ejercicio-container">
+            <div id="ejercicio13" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 13</span>
@@ -769,7 +790,7 @@
             </div>
             
             <!-- Ejercicio 14 -->
-            <div id="ejercicio14" class="ejercicio-container">
+            <div id="ejercicio14" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 14</span>
@@ -827,7 +848,7 @@
             </div>
             
             <!-- Ejercicio 15 -->
-            <div id="ejercicio15" class="ejercicio-container">
+            <div id="ejercicio15" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 15</span>
@@ -875,7 +896,7 @@
             </div>
             
             <!-- Ejercicio 16 -->
-            <div id="ejercicio16" class="ejercicio-container">
+            <div id="ejercicio16" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 16</span>
@@ -928,7 +949,7 @@
             </div>
             
             <!-- Ejercicio 17 -->
-            <div id="ejercicio17" class="ejercicio-container">
+            <div id="ejercicio17" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 17</span>
@@ -972,7 +993,7 @@
             </div>
             
             <!-- Ejercicio 18 -->
-            <div id="ejercicio18" class="ejercicio-container">
+            <div id="ejercicio18" class="ejercicio-container" style="display: none;">
                 <div class="ejercicio-card">
                     <div class="ejercicio-header">
                         <span>Ejercicio 18</span>
@@ -1174,7 +1195,7 @@
                         <div class="paso">
                             <div class="concepto">Concepto: Multiplicar ambos lados por \(0.52\cos(\theta)\).</div>
 
-                            \[ \dfrac{d^3 \times 0.52\cos(\theta)}{8\pi^3} = vR \]
+                            \[ \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3} = vR \]
 
                             \[ \dfrac{0.52 d^3 \cos(\theta)}{8\pi^3} = vR \]
                         </div>
@@ -1259,26 +1280,43 @@
     </div>
     
     <script>
-        // Configuración de MathJax
-        window.MathJax = {
-            tex: {
-                inlineMath: [['\\(', '\\)']],
-                displayMath: [['\\[', '\\]']],
-                processEscapes: true
-            },
-            svg: {
-                fontCache: 'global'
-            }
-        };
-        
-        // Función para navegar entre ejercicios
+        // Función para mostrar un ejercicio y ocultar los demás
         function navegarA(id, circular = false) {
+            // Ocultar todos los ejercicios
+            document.querySelectorAll('.ejercicio-container').forEach(container => {
+                container.style.display = 'none';
+            });
+            
+            // Mostrar el ejercicio seleccionado
             const elem = document.getElementById(id);
             if (elem) {
+                elem.style.display = 'block';
                 elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Volver a renderizar MathJax para el ejercicio recién mostrado
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    try {
+                        MathJax.typesetPromise([elem])
+                            .then(() => {
+                                console.log('MathJax aplicado al ejercicio:', id);
+                            })
+                            .catch((err) => {
+                                console.error('Error al renderizar MathJax:', err);
+                            });
+                    } catch (e) {
+                        console.error('Error al ejecutar MathJax.typesetPromise:', e);
+                    }
+                }
             } else if (circular) {
                 // Si estamos en modo circular y el ID no existe, ir al primero
-                document.getElementById('ejercicio1').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const primerEjercicio = document.getElementById('ejercicio1');
+                primerEjercicio.style.display = 'block';
+                primerEjercicio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Aplicar MathJax al primer ejercicio
+                if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+                    MathJax.typesetPromise([primerEjercicio]);
+                }
             }
         }
         
@@ -1309,6 +1347,25 @@
                 toggle.querySelector('span').textContent = 'Ocultar índice de ejercicios';
             }
         }
+
+        // Inicialización: Mostrar solo el índice al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Ocultar todos los ejercicios al inicio
+            document.querySelectorAll('.ejercicio-container').forEach(container => {
+                container.style.display = 'none';
+            });
+
+            // Configurar evento para el botón de toggle del índice
+            document.querySelector('.toggle-indice').addEventListener('click', toggleIndice);
+
+            // Esperar a que MathJax esté listo antes de mostrar cualquier contenido
+            setTimeout(function() {
+                console.log("Inicializando página y MathJax");
+                
+                // Mostrar el ejercicio 1 por defecto
+                navegarA('ejercicio1');
+            }, 500);
+        });
     </script>
 </body>
 </html>
